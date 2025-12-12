@@ -1,0 +1,169 @@
+PROJECT: BookShopMVC
+TEAM_SIZE: 3 members
+NOTE: Mỗi member có 2 role (Dev + Tester chéo), giao diện (UI) làm kèm trong từng module, không tách riêng.
+
+========================================
+1. DANH SÁCH MODULE CHỨC NĂNG
+========================================
+MODULE_1:
+    NAME: Authentication & Identity
+    DESCRIPTION: Đăng ký, đăng nhập, quên mật khẩu, quản lý tài khoản, phân quyền (Admin/User).
+    GIT_BRANCH: feature/auth-identity
+    RELATED_PARTS:
+        - Areas/Identity/**
+        - ApplicationUser.cs
+        - BookShopMVC.Utility/EmailSender.cs
+        - BookShopMVC.Utility/StaticDetails.cs
+        - View/UI liên quan login/register/layout cho account.
+
+MODULE_2:
+    NAME: Category Management
+    DESCRIPTION: CRUD danh mục sách, quản lý thể loại, giao diện quản lý category cho Admin.
+    GIT_BRANCH: feature/category
+    RELATED_PARTS:
+        - Areas/Admin/Controllers/CategoryController.cs
+        - Areas/Admin/Views/Category/**
+        - BookShopMVC.Model/Category.cs
+        - BookShopMVC.DataAccess/Repository/CategoryRepository.cs
+        - Giao diện quản lý danh mục trong khu vực Admin.
+
+MODULE_3:
+    NAME: Product & Catalog
+    DESCRIPTION: Quản lý sản phẩm, upload ảnh, hiển thị danh sách/chi tiết sách cho người dùng.
+    GIT_BRANCH: feature/product-catalog
+    RELATED_PARTS:
+        - Areas/Admin/Controllers/ProductController.cs
+        - Areas/Admin/Views/Product/**
+        - Views/Home/Index.cshtml, Details.cshtml, Category.cshtml, _ProductsGridPartial.cshtml
+        - BookShopMVC.Model/Product.cs, ProductDTO.cs
+        - BookShopMVC.Services/ImageService.cs
+        - BookShopMVC.Model/Validation/**
+        - Giao diện catalog (home, danh mục, chi tiết sản phẩm).
+
+MODULE_4:
+    NAME: Shopping Cart
+    DESCRIPTION: Giỏ hàng: thêm/xóa/cập nhật số lượng, tính tổng tiền, giao diện giỏ hàng.
+    GIT_BRANCH: feature/shopping-cart
+    RELATED_PARTS:
+        - Controllers/ShoppingCartController.cs
+        - BookShopMVC.Services/CartService.cs, ICartService.cs
+        - BookShopMVC.Model/Cart.cs, ShoppingCartItem.cs, CartDTO.cs
+        - BookShopMVC.DataAccess/Repository/CartRepository.cs, CartItemRepository.cs
+        - Views/ShoppingCart/Index.cshtml, Summary.cshtml, OrderSummary.cshtml
+        - wwwroot/js/cart.js, addToCart.js
+        - Giao diện giỏ hàng và mini-cart nếu có.
+
+MODULE_5:
+    NAME: Order & Payment
+    DESCRIPTION: Tạo đơn hàng từ giỏ hàng, lưu thông tin order, tích hợp/mô phỏng thanh toán VNPay, giao diện đặt hàng.
+    GIT_BRANCH: feature/order-payment
+    RELATED_PARTS:
+        - BookShopMVC.Model/Order.cs, OrderItem.cs
+        - BookShopMVC.DataAccess/Repository/OrderRepository.cs, OrderItemRepository.cs
+        - Pages/Order.cshtml, Order.cshtml.cs
+        - Pages/YourOrder.cshtml, YourOrder.cshtml.cs
+        - BookShopMVC.Services/VNPayService.cs
+        - Giao diện đặt hàng, xem đơn hàng.
+
+========================================
+2.NHÁNH GIT (BRANCH STRATEGY)
+========================================
+MAIN_BRANCHES:
+    - main
+        + Chứa code ổn định, chạy được, đã qua test chéo.
+        + Dùng để gắn tag phiên bản (v0.1.0, v0.2.0, ...).
+    - (optional) develop
+        + nơi tích hợp các feature trước khi merge vào main.
+        
+FEATURE_BRANCHES (THEO MODULE):
+    - feature/auth-identity      : MODULE_1
+    - feature/category           : MODULE_2
+    - feature/product-catalog    : MODULE_3
+    - feature/shopping-cart      : MODULE_4
+    - feature/order-payment      : MODULE_5
+
+BUGFIX_BRANCHES (SAU KHI ĐÃ MERGE MAIN, NẾU CÓ):
+    - bugfix/<short-description>-<issue-id>
+    Ví dụ:
+        - bugfix/cart-total-issue-21
+        - bugfix/order-null-address-34
+
+========================================
+3. MODULE LÀM SONG SONG (PHÂN CÔNG & TEST CHÉO)
+========================================
+TEAM_MEMBERS (3 người):
+    - MEMBER_A
+    - MEMBER_B
+    - MEMBER_C
+
+GIAI_ĐOẠN_1: PHÁT TRIỂN SONG SONG CÁC MODULE NỀN TẢNG
+    THỜI_ĐIỂM: Sprint 1
+    MODULE_CHÍNH:
+        - MODULE_1: Authentication & Identity
+            DEV    : MEMBER_A
+            TESTER : MEMBER_B
+            BRANCH : feature/auth-identity
+
+        - MODULE_2: Category Management
+            DEV    : MEMBER_B
+            TESTER : MEMBER_C
+            BRANCH : feature/category
+
+        - MODULE_3: Product & Catalog
+            DEV    : MEMBER_C
+            TESTER : MEMBER_A
+            BRANCH : feature/product-catalog
+
+GIAI_ĐOẠN_2: CHỨC NĂNG NGHIỆP VỤ ĐẶT HÀNG
+    THỜI_ĐIỂM: Sprint 2
+    MODULE_CHÍNH:
+        - MODULE_4: Shopping Cart
+            DEV    : MEMBER_A
+            TESTER : MEMBER_C
+            BRANCH : feature/shopping-cart
+
+        - MODULE_5: Order & Payment
+            DEV    : MEMBER_B
+            TESTER : MEMBER_A
+            BRANCH : feature/order-payment
+
+========================================
+4. QUY TRÌNH HOÀN THÀNH 1 MODULE
+========================================
+STEP_1: Tạo nhánh feature từ main
+    - git checkout main
+    - git pull
+    - git checkout -b feature/<module-name>
+
+STEP_2: Phát triển chức năng + giao diện của module trên nhánh feature
+    - Commit thường xuyên, message nên kèm issue Redmine nếu có:
+      "Implement cart add item (refs #12)"
+
+STEP_3: Test chéo trên nhánh feature
+    - Thành viên khác checkout nhánh feature để test.
+    - Lỗi được ghi trên Redmine:
+        + Tracker: Bug
+        + Assigned to: DEV của module.
+        + Target version: v0.x.0 tương ứng.
+
+STEP_4: Fix bug trực tiếp trên nhánh feature
+    - Commit dạng:
+      "Fix total price rounding (fixes #21)"
+    - Đảm bảo các bug mức Blocker/Critical của module đều đã xử lý.
+
+STEP_5: Merge module vào main
+    - Tạo Pull Request: feature/<module-name> -> main
+    - Review, test lại, rồi merge vào main.
+
+STEP_6: Gắn tag phiên bản trên main
+    - Ví dụ:
+        + v0.1.0 : xong MODULE_1 (Auth & Identity)
+        + v0.2.0 : xong MODULE_2 (Category)
+        + v0.3.0 : xong MODULE_3 (Product & Catalog)
+        + v0.4.0 : xong MODULE_4 (Shopping Cart)
+        + v1.0.0 : xong MODULE_5 (Order & Payment), hệ thống chạy ổn định.
+    - Lệnh:
+        git checkout main
+        git pull
+        git tag v0.3.0 -m "Hoàn thành module Product & Catalog (đã test chéo và fix bug)"
+        git push origin v0.3.0
