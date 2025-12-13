@@ -26,57 +26,90 @@ namespace BookShopMVC.Areas.Admin.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		public IActionResult Create(Category category)
-		{
-			if (category.Name!.ToLower() == category.DisplayOrder.ToString())
-			{
-				ModelState.AddModelError("Name", "Tên không được trùng với thứ tự hiển thị");
-			}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Category category)
+        {
+            string newName = category.Name!.Trim().ToLower();
 
-			if (ModelState.IsValid)
-			{
-				_unitOfWork.Category.Add(category);
-				_unitOfWork.Save();
-				TempData["success"] = "Danh mục đã được tạo thành công!!";
-				return RedirectToAction("Index", "Category");
+            // Kiểm tra Name trùng
+            bool isNameDuplicate = _unitOfWork.Category
+                .GetAll()
+                .Any(c => c.Name!.Trim().ToLower() == newName);
 
-			}
-			return View();
-		}
+            if (isNameDuplicate)
+            {
+                ModelState.AddModelError("Name", "Tên danh mục đã tồn tại");
+            }
 
-		public IActionResult Edit(int? id)
-		{
-			if (id == null || id == 0)
-			{
-				return NotFound();
-			}
+            // Kiểm tra DisplayOrder trùng
+            bool isDisplayOrderDuplicate = _unitOfWork.Category
+                .GetAll()
+                .Any(c => c.DisplayOrder == category.DisplayOrder);
 
-			Category? category = _unitOfWork.Category.GetById((int)id);
+            if (isDisplayOrderDuplicate)
+            {
+                ModelState.AddModelError("DisplayOrder", "Thứ tự hiển thị đã tồn tại");
+            }
 
-			if (category == null)
-			{
-				return NotFound();
-			}
+            if (!ModelState.IsValid)
+            {
+                return View(category); // giữ dữ liệu nhập
+            }
 
-			return View(category);
-		}
+            _unitOfWork.Category.Add(category);
+            _unitOfWork.Save();
+            TempData["success"] = "Danh mục đã được tạo thành công!";
+            return RedirectToAction("Index");
+        }
 
-		[HttpPost]
-		public IActionResult Edit(Category category)
-		{
 
-			if (ModelState.IsValid)
-			{
-				_unitOfWork.Category.Update(category);
-				_unitOfWork.Save();
-				TempData["success"] = "Danh mục đã được sửa thành công!";
-				return RedirectToAction("Index", "Category");
-			}
-			return View();
-		}
 
-		public IActionResult Delete(int? id)
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _unitOfWork.Category.GetById(id); // dùng GetById
+            if (category == null) return NotFound();
+            return View(category);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Category category)
+        {
+            string newName = category.Name!.Trim().ToLower();
+
+            // kiểm tra Name trùng, loại trừ chính nó
+            bool isNameDuplicate = _unitOfWork.Category.GetAll()
+                .Any(c => c.Id != category.Id && c.Name!.Trim().ToLower() == newName);
+
+            if (isNameDuplicate)
+            {
+                ModelState.AddModelError("Name", "Tên danh mục đã tồn tại");
+            }
+
+            // kiểm tra DisplayOrder trùng
+            bool isDisplayOrderDuplicate = _unitOfWork.Category.GetAll()
+                .Any(c => c.Id != category.Id && c.DisplayOrder == category.DisplayOrder);
+
+            if (isDisplayOrderDuplicate)
+            {
+                ModelState.AddModelError("DisplayOrder", "Thứ tự hiển thị đã tồn tại");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
+            _unitOfWork.Category.Update(category);
+            _unitOfWork.Save();
+            TempData["success"] = "Danh mục đã được cập nhật thành công!";
+            return RedirectToAction("Index");
+        }
+
+
+        public IActionResult Delete(int? id)
 		{
 			if (id == null || id == 0)
 			{
