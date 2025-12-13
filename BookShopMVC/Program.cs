@@ -1,8 +1,8 @@
 using BookShopMVC.DataAccess.Data;
-//using BookShopMVC.DataAccess.Repository;
-//using BookShopMVC.DataAccess.Repository.IRepository;
+using BookShopMVC.DataAccess.Repository;
+using BookShopMVC.DataAccess.Repository.IRepository;
 using BookShopMVC.Model;
-//using BookShopMVC.Services;
+using BookShopMVC.Services;
 using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -24,7 +24,7 @@ cultureInfo.NumberFormat.CurrencySymbol = "₫";
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-// Add services to the container.
+//Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache(); // Lưu Session trong bộ nhớ
@@ -73,10 +73,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //    };
 //});
 builder.Services.AddRazorPages();
-//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddScoped<IEmailSender, EmailSender>();
 //builder.Services.AddTransient<ICartService, CartService>();
-//builder.Services.AddSingleton<IImageService, ImageService>();
+builder.Services.AddSingleton<IImageService, ImageService>();
 
 var app = builder.Build();
 

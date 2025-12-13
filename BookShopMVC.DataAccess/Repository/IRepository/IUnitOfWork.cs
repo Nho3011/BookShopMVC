@@ -8,8 +8,8 @@ namespace BookShopMVC.DataAccess.Repository.IRepository
 {
     public interface IUnitOfWork
     {
-        //ICategoryRepository Category { get; }
-        //IProductRepository Product { get; }
+        ICategoryRepository Category { get; }
+        IProductRepository Product { get; }
         //ICartItemRepository CartItem { get; }
         //IOrderRepository Order { get; }
         //IOrderItemRepository OrderItem { get; }
