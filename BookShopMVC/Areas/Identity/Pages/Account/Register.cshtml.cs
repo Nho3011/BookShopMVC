@@ -160,8 +160,7 @@ namespace BookShopMVC.Areas.Identity.Pages.Account
                 user.City = Input.City;
                 user.State = Input.State;
                 user.PostalCode = Input.PostalCode;
-                // user.PhoneNumber = Input.PhoneNumber;
-                // BUG: quên gán PhoneNumber nên số điện thoại không được lưu
+                user.PhoneNumber = Input.PhoneNumber;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
