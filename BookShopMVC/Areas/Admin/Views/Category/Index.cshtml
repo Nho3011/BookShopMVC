@@ -1,0 +1,66 @@
+﻿@model List<Category>
+
+<div class="container mt-4">
+    <div class="row align-items-center mb-3">
+        <div class="col-6">
+            <h2 class="fw-bold mb-0">
+                <i class="bi bi-tags-fill me-2 text-primary"></i>
+                Danh sách thể loại
+            </h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Category"
+               asp-action="Create"
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>
+                Thêm mới
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+            <tr class="text-center">
+                <th style="width:60px;">#</th>
+                <th class="text-start">Tên thể loại</th>
+                <th style="width:150px;">Thứ tự</th>
+                <th style="width:180px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int stt = 1;
+            }
+            @foreach (var obj in Model.OrderBy(u => u.DisplayOrder))
+            {
+                <tr>
+                    <td class="text-center text-muted">@stt</td>
+                    <td>@obj.Name</td>
+                    <td class="text-center">
+                        <span class="badge bg-secondary">
+                            @obj.DisplayOrder
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <a asp-controller="Category"
+                           asp-action="Edit"
+                           asp-route-id="@obj.Id"
+                           class="btn btn-sm btn-outline-primary me-1"
+                           title="Sửa">
+                            <i class="bi bi-pencil-square fs-5"></i>
+                        </a>
+
+                        <a asp-controller="Category"
+                           asp-action="Delete"
+                           asp-route-id="@obj.Id"
+                           class="btn btn-sm btn-outline-danger"
+                           title="Xóa">
+                            <i class="bi bi-trash fs-5"></i>
+                        </a>
+                    </td>
+                </tr>
+                stt++;
+            }
+        </tbody>
+    </table>
+</div>

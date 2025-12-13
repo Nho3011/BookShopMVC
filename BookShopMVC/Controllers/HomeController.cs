@@ -28,6 +28,24 @@ namespace BookShopMVC.Controllers
             return View();
         }
 
+
+        public IActionResult Category(int id)
+        {
+            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["CategoryName"] = category.Name;
+
+            var productList = _context.Products
+                                      .Where(p => p.CategoryId == id)
+                                      .ToList();
+
+            return View(productList);
+        }
+
         public IActionResult Privacy()
         {
             return View();

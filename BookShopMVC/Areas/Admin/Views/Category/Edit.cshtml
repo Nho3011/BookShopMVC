@@ -1,0 +1,57 @@
+﻿@model Category
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm rounded-4">
+
+                <!-- Header -->
+                <div class="card-header bg-warning text-dark rounded-top-4 text-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-fill me-2"></i>
+                        Sửa thể loại
+                    </h4>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body">
+                    <form method="post">
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-semibold"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="DisplayOrder" class="form-label fw-semibold"></label>
+                            <input asp-for="DisplayOrder" class="form-control" />
+                            <span asp-validation-for="DisplayOrder" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning text-dark fw-semibold flex-fill">
+                                <i class="bi bi-save-fill me-1"></i>
+                                Lưu thay đổi
+                            </button>
+
+                            <a asp-controller="Category"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary flex-fill">
+                                <i class="bi bi-arrow-left-circle me-1"></i>
+                                Quay lại
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

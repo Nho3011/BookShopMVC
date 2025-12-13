@@ -1,6 +1,6 @@
 using BookShopMVC.DataAccess.Data;
-//using BookShopMVC.DataAccess.Repository;
-//using BookShopMVC.DataAccess.Repository.IRepository;
+using BookShopMVC.DataAccess.Repository;
+using BookShopMVC.DataAccess.Repository.IRepository;
 using BookShopMVC.Model;
 //using BookShopMVC.Services;
 using BookShopMVC.Utility;
@@ -73,7 +73,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //    };
 //});
 builder.Services.AddRazorPages();
-//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //builder.Services.AddScoped<IEmailSender, EmailSender>();
 //builder.Services.AddTransient<ICartService, CartService>();
 //builder.Services.AddSingleton<IImageService, ImageService>();
