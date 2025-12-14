@@ -74,11 +74,7 @@ builder.Services.ConfigureApplicationCookie(o =>
 //});
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-=======
-//builder.Services.AddScoped<IEmailSender, EmailSender>();
->>>>>>> feature/product-catalog
 //builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddSingleton<IImageService, ImageService>();
 
