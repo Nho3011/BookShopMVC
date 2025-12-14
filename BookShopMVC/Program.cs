@@ -49,11 +49,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 
-//builder.Services.ConfigureApplicationCookie(o =>
-//{
-//    o.LoginPath = "/Identity/Account/Login";
-//    o.AccessDeniedPath = "/Identity/Account/AccessDenied";
-//});
+builder.Services.ConfigureApplicationCookie(o =>
+{
+   o.LoginPath = "/Identity/Account/Login";
+   o.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 
 
 //builder.Services.Configure<ApiBehaviorOptions>(o =>
@@ -74,7 +74,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //});
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 //builder.Services.AddTransient<ICartService, CartService>();
 //builder.Services.AddSingleton<IImageService, ImageService>();
 
