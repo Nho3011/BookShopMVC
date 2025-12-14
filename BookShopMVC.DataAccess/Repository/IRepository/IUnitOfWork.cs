@@ -12,7 +12,7 @@ namespace BookShopMVC.DataAccess.Repository.IRepository
         IProductRepository Product { get; }
         ICartItemRepository CartItem { get; }
         IOrderRepository Order { get; }
-        //IOrderItemRepository OrderItem { get; }
+        IOrderItemRepository OrderItem { get; }
         ICartRepository ShoppingCart { get; }
 
         void Save();

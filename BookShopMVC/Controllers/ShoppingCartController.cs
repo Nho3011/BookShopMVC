@@ -2,10 +2,17 @@
 using BookShopMVC.Model.ViewModels;
 using BookShopMVC.Model;
 using BookShopMVC.Services;
-using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using BookShopMVC.Utility;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 
 namespace BookShopMVC.Controllers
 {
@@ -15,18 +22,18 @@ namespace BookShopMVC.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICartService _cartService;
-        //private readonly VNPayService _vnPayService;
+        private readonly VNPayService _vnPayService;
 
         public ShoppingCartController(
             IUnitOfWork unitOfWork,
             ICartService cartService,
-            UserManager<ApplicationUser> userManager)
-            //VNPayService vnPayService)
+            UserManager<ApplicationUser> userManager,
+            VNPayService vnPayService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _cartService = cartService;
-            //_vnPayService = vnPayService;
+            _vnPayService = vnPayService;
         }
 
         public IActionResult Index()
@@ -88,69 +95,69 @@ namespace BookShopMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //[HttpPost]
-        //public IActionResult VNPayCheckout(SummaryVM summaryVM)
-        //{
-        //    string userId = _userManager.GetUserId(User);
-        //    Cart cart = _unitOfWork.ShoppingCart.GetCart(userId);
+        [HttpPost]
+        public IActionResult VNPayCheckout(SummaryVM summaryVM)
+        {
+            string userId = _userManager.GetUserId(User);
+            Cart cart = _unitOfWork.ShoppingCart.GetCart(userId);
 
-        //    if (cart == null || cart.Total <= 0)
-        //    {
-        //        TempData["error"] = "Giỏ hàng trống, không thể thanh toán.";
-        //        return RedirectToAction("Index");
-        //    }
+            if (cart == null || cart.Total <= 0)
+            {
+                TempData["error"] = "Giỏ hàng trống, không thể thanh toán.";
+                return RedirectToAction("Index");
+            }
 
-        //    decimal totalAmount = cart.Total;
-        //    long amountInVNPayFormat = Convert.ToInt64(totalAmount * 100);
+            decimal totalAmount = cart.Total;
+            long amountInVNPayFormat = Convert.ToInt64(totalAmount * 100);
 
-        //    string orderId = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
-        //    HttpContext.Session.SetString("PendingOrderId", orderId);
-        //    HttpContext.Session.SetString("PendingUserId", userId);
+            string orderId = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff");
+            HttpContext.Session.SetString("PendingOrderId", orderId);
+            HttpContext.Session.SetString("PendingUserId", userId);
 
-        //    string paymentUrl = _vnPayService.CreatePaymentUrl(HttpContext, totalAmount, orderId, "Checkout");
-        //    return Redirect(paymentUrl);
-        //}
+            string paymentUrl = _vnPayService.CreatePaymentUrl(HttpContext, totalAmount, orderId, "Checkout");
+            return Redirect(paymentUrl);
+        }
 
-        //public IActionResult PaymentReturn()
-        //{
-        //    var vnpayData = Request.Query;
-        //    string vnp_ResponseCode = vnpayData["vnp_ResponseCode"];
-        //    string pendingOrderId = HttpContext.Session.GetString("PendingOrderId");
-        //    string userId = HttpContext.Session.GetString("PendingUserId");
+        public IActionResult PaymentReturn()
+        {
+            var vnpayData = Request.Query;
+            string vnp_ResponseCode = vnpayData["vnp_ResponseCode"];
+            string pendingOrderId = HttpContext.Session.GetString("PendingOrderId");
+            string userId = HttpContext.Session.GetString("PendingUserId");
 
-        //    if (string.IsNullOrEmpty(pendingOrderId) || string.IsNullOrEmpty(userId))
-        //    {
-        //        TempData["error"] = "Không tìm thấy đơn hàng.";
-        //        return RedirectToAction("Summary");
-        //    }
+            if (string.IsNullOrEmpty(pendingOrderId) || string.IsNullOrEmpty(userId))
+            {
+                TempData["error"] = "Không tìm thấy đơn hàng.";
+                return RedirectToAction("Summary");
+            }
 
-        //    Cart cart = _unitOfWork.ShoppingCart.GetCart(userId);
+            Cart cart = _unitOfWork.ShoppingCart.GetCart(userId);
 
-        //    if (vnp_ResponseCode == "00") // Thành công
-        //    {
-        //        if (cart != null)
-        //        {
-        //            SummaryVM summaryVM = new SummaryVM() { Cart = cart };
-        //            ServiceResult result = _cartService.PlaceOrder(summaryVM);
+            if (vnp_ResponseCode == "00") // Thành công
+            {
+                if (cart != null)
+                {
+                    SummaryVM summaryVM = new SummaryVM() { Cart = cart };
+                    ServiceResult result = _cartService.PlaceOrder(summaryVM);
 
-        //            if (result.Success)
-        //            {
-        //                _unitOfWork.ShoppingCart.ClearCart(userId);
-        //                HttpContext.Session.Remove("PendingOrderId");
-        //                HttpContext.Session.Remove("PendingUserId");
+                    if (result.Success)
+                    {
+                        _unitOfWork.ShoppingCart.ClearCart(userId);
+                        HttpContext.Session.Remove("PendingOrderId");
+                        HttpContext.Session.Remove("PendingUserId");
 
-        //                TempData["success"] = "Thanh toán thành công! Đơn hàng của bạn đã được đặt.";
-        //                return RedirectToAction("Index", "Home");
-        //            }
-        //        }
-        //        TempData["error"] = "Thanh toán thành công nhưng không thể tạo đơn hàng!";
-        //        return RedirectToAction("Summary");
-        //    }
-        //    else
-        //    {
-        //        TempData["error"] = "Thanh toán thất bại hoặc bị hủy!";
-        //        return RedirectToAction("Summary");
-        //    }
-        //}
+                        TempData["success"] = "Thanh toán thành công! Đơn hàng của bạn đã được đặt.";
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                TempData["error"] = "Thanh toán thành công nhưng không thể tạo đơn hàng!";
+                return RedirectToAction("Summary");
+            }
+            else
+            {
+                TempData["error"] = "Thanh toán thất bại hoặc bị hủy!";
+                return RedirectToAction("Summary");
+            }
+        }
     }
 }
