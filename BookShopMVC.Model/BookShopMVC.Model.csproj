@@ -17,9 +17,4 @@
     <ProjectReference Include="..\BookShopMVC.Utility\BookShopMVC.Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-    <Folder Include="Mappers\" />
-  </ItemGroup>
-
 </Project>

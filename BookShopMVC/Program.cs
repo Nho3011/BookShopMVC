@@ -56,26 +56,26 @@ builder.Services.ConfigureApplicationCookie(o =>
 });
 
 
-//builder.Services.Configure<ApiBehaviorOptions>(o =>
-//{
-//    o.InvalidModelStateResponseFactory = actionContext =>
-//    {
+builder.Services.Configure<ApiBehaviorOptions>(o =>
+{
+    o.InvalidModelStateResponseFactory = actionContext =>
+    {
 
-//        List<Error> error = actionContext.ModelState
-//                    .Where(modelError => modelError.Value!.Errors.Count > 0)
-//                    .Select(modelError => new Error
-//                    {
-//                        ErrorField = modelError.Key,
-//                        ErrorDescription = modelError.Value!.Errors.FirstOrDefault()!.ErrorMessage
-//                    }).ToList();
+        List<Error> error = actionContext.ModelState
+                    .Where(modelError => modelError.Value!.Errors.Count > 0)
+                    .Select(modelError => new Error
+                    {
+                        ErrorField = modelError.Key,
+                        ErrorDescription = modelError.Value!.Errors.FirstOrDefault()!.ErrorMessage
+                    }).ToList();
 
-//        return new BadRequestObjectResult(error);
-//    };
-//});
+        return new BadRequestObjectResult(error);
+    };
+});
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-//builder.Services.AddTransient<ICartService, CartService>();
+builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddSingleton<IImageService, ImageService>();
 
 var app = builder.Build();
