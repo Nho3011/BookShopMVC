@@ -1,22 +1,20 @@
 ﻿using Ajax;
 using BookShopMVC.DataAccess.Repository.IRepository;
-using BookShopMVC.Model;
 using BookShopMVC.Model.DTO;
 using BookShopMVC.Model.Mappers;
+using BookShopMVC.Model;
 using BookShopMVC.Services;
-using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using BookShopMVC.Utility;
 
 namespace BookShopMVC.Controllers.Api
 {
-
     [Route("api/user/cart")]
     [ApiController]
     [Authorize(Roles = StaticDetails.Role_Cust + "," + StaticDetails.Role_Admin)]
-    public class ShoppingCartApiController : Controller
+    public class ShoppingCartApiController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICartService _cartService;

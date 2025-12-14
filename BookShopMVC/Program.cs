@@ -5,7 +5,6 @@ using BookShopMVC.Model;
 using BookShopMVC.Services;
 using BookShopMVC.Utility;
 using Microsoft.AspNetCore.Authentication.Certificate;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +23,7 @@ cultureInfo.NumberFormat.CurrencySymbol = "₫";
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
-//Add services to the container.
+// Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache(); // Lưu Session trong bộ nhớ
@@ -37,7 +36,7 @@ builder.Services.AddSession(options =>
 
 
 
-//builder.Services.AddSingleton<VNPayService>();
+builder.Services.AddSingleton<VNPayService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
     ServiceLifetime.Scoped
@@ -51,8 +50,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 builder.Services.ConfigureApplicationCookie(o =>
 {
-   o.LoginPath = "/Identity/Account/Login";
-   o.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    o.LoginPath = "/Identity/Account/Login";
+    o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
 

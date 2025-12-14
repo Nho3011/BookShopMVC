@@ -15,8 +15,9 @@ namespace BookShopMVC.DataAccess.Repository
         public IProductRepository Product { get; private set; }
         public ICartItemRepository CartItem { get; private set; }
         public IOrderRepository Order { get; private set; }
-        //public IOrderItemRepository OrderItem { get; private set; }
+        public IOrderItemRepository OrderItem { get; private set; }
         public ICartRepository ShoppingCart { get; private set; }
+
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -24,7 +25,7 @@ namespace BookShopMVC.DataAccess.Repository
             Product = new ProductRepository(_db);
             CartItem = new CartItemRepository(_db);
             Order = new OrderRepository(_db);
-            //OrderItem = new OrderItemRepository(_db);
+            OrderItem = new OrderItemRepository(_db);
             ShoppingCart = new CartRepository(_db);
         }
 
