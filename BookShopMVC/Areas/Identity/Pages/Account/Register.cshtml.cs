@@ -168,15 +168,14 @@ namespace BookShopMVC.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("Người dùng đã tạo tài khoản mới với mật khẩu");
 
-                    // BUG: Đăng ký xong vẫn đăng nhập được. Nhưng khi vào các chức năng cần Role_Cust bị Access Denied do user không thuộc role nào.
-                    // if (!String.IsNullOrEmpty(Input.Role))
-                    // {
-                    //     await _userManager.AddToRoleAsync(user, Input.Role);
-                    // }
-                    // else
-                    // {
-                    //     await _userManager.AddToRoleAsync(user, StaticDetails.Role_Cust);
-                    // }
+                    if (!String.IsNullOrEmpty(Input.Role))
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, StaticDetails.Role_Cust);
+                    }
 
 
 
