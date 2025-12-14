@@ -10,8 +10,8 @@ namespace BookShopMVC.ViewComponents
 
         public IViewComponentResult Invoke()
         {
-            //IEnumerable<Category> categoryList = _unitOfWork.Category.GetAll();
-            return View(/*categoryList*/);
+            IEnumerable<Category> categoryList = _unitOfWork.Category.GetAll();
+            return View(categoryList);
         }
 
         public MenuViewComponent(IUnitOfWork unitOfWork)

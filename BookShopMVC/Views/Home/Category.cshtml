@@ -4,7 +4,7 @@
 }
 <div>
     <h1>Thể loại sản phẩm: @ViewData["CategoryName"]</h1>
-  @*   <partial name="_ProductsGridPartial" model="Model" /> *@
+    <partial name="_ProductsGridPartial" model="Model" />
     @if (!Model.Any())
     {
         <p>Không có sản phẩm nào trong danh mục này.</p>
