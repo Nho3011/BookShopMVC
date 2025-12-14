@@ -3,21 +3,25 @@ const itemDeleteButtons = document.querySelectorAll('.cart-item-remove-btn')
 
 itemQuantityInputs.forEach(input => {
     input.addEventListener('change', () => {
-        const productId = parseInt(input.getAttribute('data-id'))
-        const quantity = parseInt(input.value)
+        // kiểm tra số lượng
+        let quantity = parseInt(input.value);
+        if (isNaN(quantity) || quantity < 1) {
+            quantity = 1;
+            input.value = 1;
+        }
+
+        const productId = parseInt(input.getAttribute('data-id'));
 
         fetch(`/api/user/cart/item/${productId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: quantity
+            body: JSON.stringify({ quantity }) // stringify để gửi JSON chuẩn
         })
             .then(res => {
-                if (!res.ok) {
-                    return;
-                }
-                return res.json()
+                if (!res.ok) return;
+                return res.json();
             })
             .then(data => {
                 const toast = {
@@ -25,20 +29,22 @@ itemQuantityInputs.forEach(input => {
                     message: "Cập nhật số lượng thành công.",
                     status: TOAST_STATUS.SUCCESS,
                     timeout: 2000
+                };
+
+                if (!data || data.status !== "success") {
+                    toast.title = "Lỗi";
+                    toast.message = "Gặp lỗi khi cập nhật số lượng.";
+                    toast.status = TOAST_STATUS.DANGER;
                 }
 
-                if (!data || data.status != "success") {
-                    toast.title = "Lỗi"
-                    toast.message = "Gặp lỗi khi cập nhật số lượng."
-                    toast.status = TOAST_STATUS.DANGER
-                }
                 Toast.create(toast);
-                refreshItemQuantity(productId)
-                refreshProductPrice(productId, data.data.items)
-                updateTotalPrices(data.data)
+                refreshItemQuantity(productId);
+                refreshProductPrice(productId, data.data.items);
+                updateTotalPrices(data.data);
             })
-    })
-})
+    });
+});
+
 
 itemDeleteButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -91,6 +97,9 @@ itemDeleteButtons.forEach(button => {
             });
     });
 });
+
+
+
 
 
 function removeCartItem(productId) {
