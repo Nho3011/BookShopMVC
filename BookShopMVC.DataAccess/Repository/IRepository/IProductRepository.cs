@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace BookShopMVC.DataAccess.Repository.IRepository
 {
-	public interface ICategoryRepository : IRepository<Category>
+	public interface IProductRepository : IRepository<Product>
 	{
-		void Update(Category category);
-		public Category? GetById(int id);
+		void Update(Product product);
+		public Product? GetById(int id);
 	}
- 
 }
